@@ -1,0 +1,59 @@
+# General
+*.log
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+.DS_Store
+
+# Python virtual environment
+venv/
+env/
+
+# Django
+*.db
+db.sqlite3
+/media/
+*.pot
+*.py[cod]
+*.pyo
+*.swp
+*.swo
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React
+/build/
+/dist/
+
+# Environment variables
+.env
+.env.*
+
+# Docker
+*.stackdump
+.dockerignore
+docker-compose.override.yml
+docker-compose.override.yaml
+
+# Editor and IDE-specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# GitHub Actions
+.github/workflows/*.bak
+.github/workflows/*.log
+
+# Backup files
+*.bak
+*.old
+*.swp
+*.swo
+*.tmp
