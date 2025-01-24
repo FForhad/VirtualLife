@@ -81,7 +81,7 @@ frontend/
 ### Backend Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/virtual-life.git
+   git clone https://github.com/fforhad/virtuallife.git
    cd virtual-life/backend
    ```
 2. Create a virtual environment and install dependencies:
