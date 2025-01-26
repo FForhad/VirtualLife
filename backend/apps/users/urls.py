@@ -1,5 +1,15 @@
 from django.urls import path
+from .views.listall import UserProfileListAPIView
+from .views.singlecreate import UserProfileCreateAPIView
+from .views.singledetails import UserProfileRetrieveAPIView
+from .views.singleupdate import UserProfileUpdateAPIView
+from .views.singledelete import UserProfileDeleteAPIView
+
 
 urlpatterns = [
-    # path('users/', ),
+    path('profiles/', UserProfileListAPIView.as_view(), name='user-profile-list'),
+    path('profiles/create/', UserProfileCreateAPIView.as_view(), name='user-profile-create'),
+    path('profiles/<int:pk>/', UserProfileRetrieveAPIView.as_view(), name='user-profile-retrieve'),
+    path('profiles/<int:pk>/update/', UserProfileUpdateAPIView.as_view(), name='user-profile-update'),
+    path('profiles/<int:pk>/delete/', UserProfileDeleteAPIView.as_view(), name='user-profile-delete'),
 ]

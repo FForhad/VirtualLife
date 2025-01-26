@@ -21,7 +21,8 @@ CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
 
 PROJECT_APPS = [
     'apps.users.apps.UsersConfig',
-    # 'apps.persons.apps.PersonsConfig',
+    'apps.posts.apps.PostsConfig',
+    'apps.groups.apps.GroupsConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -132,8 +133,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'accounts.authentications.CustomJWTAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'accounts.authentications.CustomJWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -150,4 +151,4 @@ REST_FRAMEWORK = {
 #     'BLACKLIST_AFTER_ROTATION': True,
 # }
 
-# AUTH_USER_MODEL = 'accounts.Accounts'
+AUTH_USER_MODEL = 'users.User'
