@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import User
-from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth import authenticate
+from rest_framework.exceptions import AuthenticationFailed
+
 
 class UserSerializer(serializers.ModelSerializer):
     profile_picture_url = serializers.SerializerMethodField()
@@ -40,3 +42,26 @@ class UserSerializer(serializers.ModelSerializer):
         if password:
             instance.set_password(password)  # Hash password before saving
         return super().update(instance, validated_data)
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'password', 'first_name', 'last_name', 'bio', 'profile_picture']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(email=data['email'], password=data['password'])
+        if not user:
+            raise AuthenticationFailed("Invalid credentials")
+        return user
