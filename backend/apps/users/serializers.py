@@ -61,7 +61,16 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        user = authenticate(email=data['email'], password=data['password'])
+        email = data.get("email")
+        password = data.get("password")
+
+        # Authenticate user using email as username
+        user = authenticate(username=email, password=password)
         if not user:
-            raise AuthenticationFailed("Invalid credentials")
+            raise serializers.ValidationError("Invalid credentials")
+        
+        # Optional: Check if the user is active
+        if not user.is_active:
+            raise serializers.ValidationError("User account is disabled")
+        
         return user
