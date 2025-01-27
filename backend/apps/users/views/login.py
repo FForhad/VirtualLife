@@ -8,18 +8,32 @@ from django.conf import settings
 import threading
 from apps.users.views.forget_password import generate_security_code
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from datetime import datetime
+
 # Utility Function to send security code email asynchronously
 def send_security_code_email_async(email, security_code):
     """
     Sends a security code to the user's email asynchronously.
     """
     subject = 'Security Code to Login'
-    message = f'Please enter this Security Code to login.\nSecurity Code: {security_code}\nThank you!'
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [email]
 
+    # Render the HTML content
+    html_content = render_to_string('emails/two_factor.html', {
+        'security_code': security_code,
+        'year': datetime.now().year,
+    })
+    text_content = strip_tags(html_content)  # Fallback for plain text emails
+
     try:
-        send_mail(subject, message, from_email, recipient_list)
+        # Create the email message
+        msg = EmailMultiAlternatives(subject, text_content, from_email, recipient_list)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
     except Exception as e:
         print(f"Error sending email: {str(e)}")
 
@@ -29,15 +43,13 @@ class LoginView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data=request.data)
-        print(serializer,'+++++++++++++++')
         if serializer.is_valid():
             user = serializer.validated_data
 
             # If Two-Factor Authentication is enabled
             if user.twofactor:
-                # Generate and send security code
                 security_code = generate_security_code()
-                user.security_code = security_code
+                user.securitycode = security_code
                 user.save()
 
                 # Send email asynchronously
@@ -66,7 +78,6 @@ class LoginView(APIView):
 
                 access_token = str(access_token)
 
-                # Return the tokens and other relevant details
                 response = generate_response(
                     success=True,
                     message="Login successful",
@@ -76,7 +87,6 @@ class LoginView(APIView):
                         "refresh": str(refresh),
                     }
                 )
-                # Optionally set cookie
                 response.set_cookie(
                     key="jwt",
                     value=access_token,
