@@ -48,12 +48,14 @@ class SecurityCode(APIView):
 
     def post(self, request):
         username = request.data.get('username', '')
+        print(username)
 
         try:
             # Check if the user exists
             user = User.objects.get(username=username)
 
             # Ensure the user has an associated email
+            print(user.email)
             if not user.email:
                 return JsonResponse({'status': 2, 'message': "No email associated with this user."})
 
@@ -76,7 +78,7 @@ class ResetPassword(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        security_code = request.data.get('code', '')
+        security_code = request.data.get('securitycode', '')
         new_password = request.data.get('password', '')
 
         try:
