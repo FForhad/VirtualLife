@@ -7,6 +7,7 @@ from .views.singledelete import UserProfileDeleteAPIView
 
 from .views.register import RegisterView
 from .views.login import LoginView
+from .views.verify2FA import VerifySecurityCode
 
 
 urlpatterns = [
@@ -18,4 +19,6 @@ urlpatterns = [
 
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
+    path('verify/', VerifySecurityCode.as_view(), name='2faVerify'),
+    
 ]
