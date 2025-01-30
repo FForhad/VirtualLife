@@ -24,7 +24,7 @@ def send_security_code_email(email, security_code):
         f'Security Code: {security_code}\n'
         f'Thank you!'
     )
-    from_email = settings.EMAIL_HOST_USER
+    from_email = settings.EMAIL_HOST_NAME
     recipient_list = [email]
 
     try:
@@ -48,14 +48,12 @@ class SecurityCode(APIView):
 
     def post(self, request):
         username = request.data.get('username', '')
-        print(username)
 
         try:
             # Check if the user exists
             user = User.objects.get(username=username)
 
             # Ensure the user has an associated email
-            print(user.email)
             if not user.email:
                 return JsonResponse({'status': 2, 'message': "No email associated with this user."})
 
