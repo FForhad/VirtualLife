@@ -12,10 +12,10 @@ const GoogleLoginButton = () => {
             }
 
             // Get the API URL from the .env file
-            const fullUrl = `${apiUrl}/auth/google-login/`
+            const Url = `${apiUrl}auth/google-login/`
 
             // Send the access token to the backend
-            fetch(fullUrl, {
+            fetch(Url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ token: response.access_token }), // Send access token
