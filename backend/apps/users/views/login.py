@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from datetime import datetime
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 # Utility Function to send security code email asynchronously
 def send_security_code_email_async(email, security_code):
     """
@@ -103,3 +105,56 @@ class LoginView(APIView):
             status=status.HTTP_400_BAD_REQUEST,
             data={"errors": serializer.errors},
         )
+
+
+from django.contrib.auth import get_user_model
+
+class RefreshTokenView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.data.get("refresh")
+
+        if not refresh_token:
+            return generate_response(
+                success=False,
+                message="Refresh token is required",
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            refresh = RefreshToken(refresh_token)
+
+            # Extract user ID from refresh token
+            user_id = refresh["user_id"]
+            User = get_user_model()
+            user = User.objects.get(id=user_id)
+
+            # Generate new access token
+            access_token = refresh.access_token
+            access_token["id"] = user.id
+            access_token["email"] = user.email
+            access_token["username"] = user.username
+
+            access_token = str(access_token)
+
+            return generate_response(
+                success=True,
+                message="Access token refreshed successfully",
+                status=status.HTTP_200_OK,
+                data={"access": access_token}
+            )
+
+        except User.DoesNotExist:
+            return generate_response(
+                success=False,
+                message="User not found",
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        except Exception as e:
+            return generate_response(
+                success=False,
+                message="Invalid or expired refresh token",
+                status=status.HTTP_401_UNAUTHORIZED
+            )

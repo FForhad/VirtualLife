@@ -24,7 +24,7 @@ def send_security_code_email(email, security_code):
         f'Security Code: {security_code}\n'
         f'Thank you!'
     )
-    from_email = settings.EMAIL_HOST_USER
+    from_email = settings.EMAIL_HOST_NAME
     recipient_list = [email]
 
     try:
@@ -76,7 +76,7 @@ class ResetPassword(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        security_code = request.data.get('code', '')
+        security_code = request.data.get('securitycode', '')
         new_password = request.data.get('password', '')
 
         try:

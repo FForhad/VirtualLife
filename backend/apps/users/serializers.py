@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from apps.users.models import User
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 
@@ -57,20 +57,28 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    identifier = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        email = data.get("email")
+        identifier = data.get("identifier")
         password = data.get("password")
 
-        # Authenticate user using email as username
-        user = authenticate(username=email, password=password)
+        user = None
+        if "@" in identifier:
+            try:
+                user = User.objects.get(email=identifier)
+                username = user.username
+            except User.DoesNotExist:
+                raise serializers.ValidationError("Invalid credentials")
+        else:
+            username = identifier
+
+        user = authenticate(username=username, password=password)
         if not user:
             raise serializers.ValidationError("Invalid credentials")
         
-        # Optional: Check if the user is active
         if not user.is_active:
             raise serializers.ValidationError("User account is disabled")
-        
+
         return user

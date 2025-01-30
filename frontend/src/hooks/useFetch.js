@@ -23,12 +23,14 @@ const useFetch = (url, options = {}) => {
       }
     };
 
-    fetchData();
+    if (url) {
+      fetchData();
+    }
 
     return () => {
       isMounted = false; // Cleanup
     };
-  }, [url, options]);
+  }, [url, JSON.stringify(options)]); // Only re-run if `url` or `options` change
 
   return { data, loading, error };
 };

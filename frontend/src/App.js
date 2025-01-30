@@ -1,15 +1,17 @@
-import { Button } from "antd";
-import "../src/styles/app.css"
-import HomePage from "./pages/homepage";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ServicePage from "./pages/servicepage";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/homepage/index.jsx";
+import ServicePage from "./pages/servicepage/index.jsx";
+import LoginPage from "./pages/loginpage/index.jsx";  // Import LoginPage
+
 function App() {
   return (
-    <div>
-      <Router><HomePage/><ServicePage/></Router>
-      
-
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/services" element={<ServicePage />} />
+      </Routes>
+    </Router>
   );
 }
 
